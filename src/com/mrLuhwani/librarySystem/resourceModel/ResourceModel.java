@@ -6,13 +6,11 @@ public abstract class ResourceModel {
     private String author;
     //private String isbn;
     //for now we might use the hashcode as the isbn, or just ignpre for now
-    private boolean issued;
     private int copyCount;
     
-    ResourceModel(String title, String author, boolean issued, int copyCount) {
+    public ResourceModel(String title, String author, int copyCount) {
         this.title = title;
         this.author = author;
-        this.issued = issued;
         this.copyCount = copyCount;
     }
 
@@ -21,12 +19,6 @@ public abstract class ResourceModel {
     }
     public String getAuthor() {
         return this.author;
-    }
-    public boolean getIssued() {
-        return this.issued;
-    }
-    public void setIssued(boolean issued) {
-        this.issued = issued;
     }
     @Override
     public String toString() {

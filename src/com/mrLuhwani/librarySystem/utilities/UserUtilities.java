@@ -7,7 +7,6 @@ import com.mrLuhwani.librarySystem.userModel.*;
 public class UserUtilities {
 
     private static Scanner sc = new Scanner(System.in);
-    
     static ArrayList<UserModel> users = new ArrayList<>();
 
     public static UserModel userLogin() {
@@ -73,9 +72,9 @@ public class UserUtilities {
             response = sc.nextLine();
             switch (response) {
                 case "1" -> ResourceUtilities.showResources();
-                case "2" -> System.out.println("borrow resource");
-                case "3" -> System.out.println("return book");
-                case "4" -> System.out.println("check borrowed list along with due dates");
+                case "2" -> ResourceUtilities.borrowResource(user);
+                case "3" -> ResourceUtilities.returnResource(user);
+                case "4" -> user.printItemsAndDueDates();
                 case "5" -> System.out.println("upgrade acct");
                 case "6" -> UserUtilities.changePassword(user);
                 case "0" -> {
@@ -87,7 +86,7 @@ public class UserUtilities {
         }
     }
 
-    static void changePassword(UserModel user) {
+    private static void changePassword(UserModel user) {
         String oldPassword = user.getPassword();
         System.out.print("Enter your previous password: ");
         String input = sc.nextLine();

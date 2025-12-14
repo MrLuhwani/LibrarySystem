@@ -2,7 +2,6 @@ package com.mrLuhwani.librarySystem;
 
 import java.util.Objects;
 import java.util.Scanner;
-
 import com.mrLuhwani.librarySystem.userModel.UserModel;
 import com.mrLuhwani.librarySystem.utilities.UserUtilities;
 
