@@ -10,4 +10,11 @@ public class FreeUser extends UserModel {
     public LocalDateTime setDueDate(LocalDateTime instant) {
         return instant.plusDays(10);
     }
+    @Override
+    public boolean canBorrow() {
+        if (this.getItemsAndDueDates().size() == 3) {
+            return false;
+        }
+        return true;
+    }
 }

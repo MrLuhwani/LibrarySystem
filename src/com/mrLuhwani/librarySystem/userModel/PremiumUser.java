@@ -9,4 +9,11 @@ public class PremiumUser extends UserModel {
     public LocalDateTime setDueDate(LocalDateTime instant) {
         return instant.plusDays(30);
     }
+    @Override
+    public boolean canBorrow() {
+        if (this.getItemsAndDueDates().size() == 10) {
+            return false;
+        }
+        return true;
+    }
 }

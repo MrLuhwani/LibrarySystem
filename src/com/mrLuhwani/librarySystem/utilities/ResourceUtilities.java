@@ -38,6 +38,10 @@ public class ResourceUtilities {
     static void borrowResource(UserModel user) {
         // the same is repeated in the two methods, so build a helper method for
         // the two of them.
+        if (!user.canBorrow()){
+            System.out.println("Max number of items to borrow has been reached.\nPlease return any of your borrowed items and try again");
+            return;
+        }
         String category;
         System.out.print("Enter the number for the category: \n1.Book\n2.DVD\n3.E-book\nReponse: ");
         category = sc.nextLine();

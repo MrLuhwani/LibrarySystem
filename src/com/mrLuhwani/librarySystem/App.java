@@ -1,5 +1,6 @@
 package com.mrLuhwani.librarySystem;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 import com.mrLuhwani.librarySystem.userModel.UserModel;
@@ -18,13 +19,15 @@ public class App {
                 switch (response) {
                     case "1" -> {
                         System.out.println("Login to your account");
-                        UserModel user = UserUtilities.userLogin();
-                        if (!(Objects.isNull(user))) {
-                            UserUtilities.menu(user);
+                        //if the person is a premium user, no need for them to see upgrade
+                        //acct in the menu
+                        Map<UserModel, Integer> user = UserUtilities.userLogin();
+                        if (!(Objects.isNull(user))) {    
+                            UserUtilities.menu(user);   
                         }
                     }
                     case "2" -> {
-                        UserModel user = UserUtilities.createUser();
+                        Map<UserModel, Integer> user = UserUtilities.createUser();
                         UserUtilities.menu(user);
                     }
                     case "3" -> {
@@ -41,32 +44,12 @@ public class App {
     }
 }
 /*
- * Each person has a username and password
- * password can be changed
  * Maybe you create a librarian model
- * Resources are books, dvds, and online books
- * maybe youll try looking for books based on their hashcode rather than name
- * basic users have a limit to how much they can borrow
  * there is a date stuff that checks if the book is due
+ * basic users have a limit to how much they can borrow, 3
  * basic users have only 10 days
  * basic users can't get license to online books
- * special users have unlimited boorowing
+ * special users have 10 borrowing
  * 30 days borrowing
  * have access to online resources
- * you can create a card
- * 
- * CLI:
- * welcome message
- * 1. Login
- * 1. Show available books
- * 2. Borrow book
- * 3. Return book
- * 4. Check what youve borrowed
- * 5. Check due dates(maybe merge 4 and 5)
- * 6. Future feature(upgrade card)
- * 7. Change password
- * 2. Create Card
- * 1. Ask for username, email and password
- * 2. Future featuure(check for actual valid stuff like with google and stuff)
- * 3. Exit
  */

@@ -10,12 +10,14 @@ public abstract class UserModel {
     private String password;
     private String email;
     private HashMap<String, LocalDateTime> itemsAndDueDates;
+    private MembershipLevel membershipLevel;
     
     public UserModel(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.itemsAndDueDates = new HashMap<>();
+        this.membershipLevel = MembershipLevel.FREE;
+        this.itemsAndDueDates = new HashMap<>(this.membershipLevel.getBorrowLimit());
     }
 
     public String getUsername() {
@@ -38,6 +40,20 @@ public abstract class UserModel {
             System.out.println(item + " Return date: " + this.itemsAndDueDates.get(item).format(formatter));
         }
     }
-
+    public MembershipLevel getMembershipLevel() {
+        return this.membershipLevel;
+    }
+    public void accountUpgrade() {
+        this.membershipLevel = MembershipLevel.PREMIUM;
+        System.out.println("Account Upgrade Successful!");
+    }
+    public void accountDegrade() {
+        this.membershipLevel = MembershipLevel.FREE;
+        System.out.println("Premium subscription cancelled!");
+    }
+    public int getBorrowLimit() {
+        return this.membershipLevel.getBorrowLimit();
+    }
+    public abstract boolean canBorrow();
     public abstract LocalDateTime setDueDate(LocalDateTime instant);
 }

@@ -2,6 +2,9 @@ package com.mrLuhwani.librarySystem.utilities;
 
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.mrLuhwani.librarySystem.userModel.*;
 
 public class UserUtilities {
@@ -9,9 +12,7 @@ public class UserUtilities {
     private static Scanner sc = new Scanner(System.in);
     static ArrayList<UserModel> users = new ArrayList<>();
 
-    public static UserModel userLogin() {
-
-        boolean loggedIn = false;
+    public static HashMap<UserModel, Integer> userLogin() {
         System.out.print("Enter username: ");
         String usernameInput = sc.nextLine();
         // Most ppl remeber their emails, than username, so when you have advance email
@@ -19,20 +20,19 @@ public class UserUtilities {
         System.out.print("Enter password: ");
         String passwordInput = sc.nextLine();
 
-        for (UserModel user : users) {
-            if (user.getUsername().equals(usernameInput) && user.getPassword().equals(passwordInput)) {
-                System.out.println("Login successful! Welcome, " + user.getUsername());
-                loggedIn = true;
-                return user;
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getUsername().equals(usernameInput) && users.get(i).getPassword().equals(passwordInput)) {
+                HashMap<UserModel, Integer> userAndIndex = new HashMap<>(1);
+                System.out.println("Login successful! Welcome, " + users.get(i).getUsername());
+                userAndIndex.put(users.get(i), i);
+                return userAndIndex;
             }
         }
-        if (!loggedIn) {
-            System.out.println("Invalid username or password. Please try again.");
-        }
+        System.out.println("Invalid username or password. Please try again.");
         return null;
     }
 
-    public static UserModel createUser() {
+    public static HashMap<UserModel, Integer> createUser() {
         String username;
         String password;
         String email;
@@ -59,29 +59,66 @@ public class UserUtilities {
         System.out.print("Enter password: ");
         password = sc.nextLine();
         UserModel user = new FreeUser(username, password, email);
+        int index = users.size() - 1;
         users.add(user);
         System.out.println("New Account successfully created.");
-        return user;
+        HashMap<UserModel, Integer> userAndIndex = new HashMap<>(1);
+        System.out.println("Welcome, " + users.get(index).getUsername());
+        userAndIndex.put(users.get(index), index);
+        return userAndIndex;
     }
 
-    public static void menu(UserModel user) {
+    private static String menuChoices(boolean isFree) {
+        // trying to write DRY code, LOL
+        String menu1 = "Enter the number for the task you wish to perform\n1.Show Available Resources\n2.Borrow Resource\n3.Return Resource\n4.Check your borrowed list\n5.Upgrade Account\n6.Change Password\n0.Log Out\nResponse: ";
+        String menu2 = "Enter the number for the task you wish to perform\n1.Show Available Resources\n2.Borrow Resource\n3.Return Resource\n4.Check your borrowed list\n5.Terminate premium package\n6.Change Password\n0.Log Out\nResponse: ";
+        if (isFree) {
+            return menu1;
+        }
+        return menu2;
+    }
+
+    public static void menu(Map<UserModel, Integer> user) {
+        UserModel u = null;
+        for (UserModel us : user.keySet()) {
+            u = us;
+        }
         String response;
-        while (true) {
-            System.out.print(
-                    "Enter the number for the task you wish to perform\n1.Show Available Resources\n2.Borrow Resource\n3.Return Resource\n4.Check your borrowed list\n5.Upgrade Account\n6.Change Password\n0.Log Out\nResponse: ");
-            response = sc.nextLine();
-            switch (response) {
-                case "1" -> ResourceUtilities.showResources();
-                case "2" -> ResourceUtilities.borrowResource(user);
-                case "3" -> ResourceUtilities.returnResource(user);
-                case "4" -> user.printItemsAndDueDates();
-                case "5" -> System.out.println("upgrade acct");
-                case "6" -> UserUtilities.changePassword(user);
-                case "0" -> {
-                    System.out.println("Logging out...");
-                    return;
+        if (u instanceof FreeUser) {
+            while (true) {
+                System.out.print(UserUtilities.menuChoices(true));
+                response = sc.nextLine();
+                switch (response) {
+                    case "1" -> ResourceUtilities.showResources();
+                    case "2" -> ResourceUtilities.borrowResource(u);
+                    case "3" -> ResourceUtilities.returnResource(u);
+                    case "4" -> u.printItemsAndDueDates();
+                    case "5" -> UserUtilities.upgradeAccount(user);
+                    case "6" -> UserUtilities.changePassword(u);
+                    case "0" -> {
+                        System.out.println("Logging out...");
+                        return;
+                    }
+                    default -> System.out.println("Invalid input!");
                 }
-                default -> System.out.println("Invalid input!");
+            }
+        } else {
+            while (true) {
+                System.out.print(UserUtilities.menuChoices(false));
+                response = sc.nextLine();
+                switch (response) {
+                    case "1" -> ResourceUtilities.showResources();
+                    case "2" -> ResourceUtilities.borrowResource(u);
+                    case "3" -> ResourceUtilities.returnResource(u);
+                    case "4" -> u.printItemsAndDueDates();
+                    case "5" -> UserUtilities.downgradeAccount(user);
+                    case "6" -> UserUtilities.changePassword(u);
+                    case "0" -> {
+                        System.out.println("Logging out...");
+                        return;
+                    }
+                    default -> System.out.println("Invalid input!");
+                }
             }
         }
     }
@@ -102,5 +139,50 @@ public class UserUtilities {
         // create a set password method, bcuz you are doing the same logic in both
         // create user and change password
 
+    }
+
+    private static void upgradeAccount(Map<UserModel, Integer> user) {
+        String response;
+        System.out.println("Premium plan costs ₦1,200/month");
+        while (true) {
+            System.out.print(
+                    "Enter a choice based on the numbers (1|2)\n1. Confirm Upgrade\n2. Cancel request\nResponse: ");
+            response = sc.nextLine();
+            // I'll think of a better way to implemet this
+            switch (response) {
+                case "1" -> {
+                    System.out.println("Processing payment...");
+                    System.out.println("Payment Successful");
+                    users.get(new ArrayList<>(user.values()).get(0)).accountUpgrade();
+                    return;
+                }
+                case "2" -> {
+                    System.out.println("Returning to main menu...");
+                    return;
+                }
+                default -> System.out.println("Invalid Input");
+            }
+        }
+    }
+
+    private static void downgradeAccount(Map<UserModel, Integer> user) {
+        String response;
+        while (true) {
+            System.out.print(
+                "Enter the number for your choice (1|2)\n1. Confirm premium subscription termination\n2. Cancel request\nResponse: ");
+            response = sc.nextLine();
+            // I'll think of a better way to implemet this
+            switch (response) {
+                case "1" -> {
+                    users.get(new ArrayList<>(user.values()).get(0)).accountDegrade();
+                    return;
+                }
+                case "2" -> {
+                    System.out.println("Returning to main menu...");
+                    return;
+                }
+                default -> System.out.println("Invalid Input");
+            }
+        }
     }
 }
