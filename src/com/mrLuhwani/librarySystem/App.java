@@ -19,16 +19,18 @@ public class App {
                 switch (response) {
                     case "1" -> {
                         System.out.println("Login to your account");
-                        //if the person is a premium user, no need for them to see upgrade
-                        //acct in the menu
-                        Map<UserModel, Integer> user = UserUtilities.userLogin();
-                        if (!(Objects.isNull(user))) {    
-                            UserUtilities.menu(user);   
+                        Map<UserModel, Integer> userAndIndex = UserUtilities.userLogin();
+                        /*
+                        try and refactor to something else other than a hashmap,
+                        maybe try a class called session and build index logic
+                        or you jusst refactor and pas in the index like that */
+                        if (!(Objects.isNull(userAndIndex))) {    
+                            UserUtilities.menu(userAndIndex);   
                         }
                     }
                     case "2" -> {
-                        Map<UserModel, Integer> user = UserUtilities.createUser();
-                        UserUtilities.menu(user);
+                        Map<UserModel, Integer> userAndIndex = UserUtilities.createUser();
+                        UserUtilities.menu(userAndIndex);
                     }
                     case "3" -> {
                         usingSystem = false;
@@ -43,13 +45,3 @@ public class App {
         }
     }
 }
-/*
- * Maybe you create a librarian model
- * there is a date stuff that checks if the book is due
- * basic users have a limit to how much they can borrow, 3
- * basic users have only 10 days
- * basic users can't get license to online books
- * special users have 10 borrowing
- * 30 days borrowing
- * have access to online resources
- */

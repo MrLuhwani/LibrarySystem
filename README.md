@@ -1,18 +1,76 @@
-## Getting Started
+# Library Management System (Java CLI)
+A simple command-line library managemnet system built in Java.
+This project focuses on applying core OOP principles such as abstraction, inheritance and enums.
+It allows users to create accounts, borrow and return library resources, and manage membership levels - all through the text based interface
+---
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+## Features
+User Management:
+- Create free user accounts
+- Login authentication (username & password)
+- Change account password
+- Upgrade to premium membership
+- Downgrade to free tier
 
-## Folder Structure
+Membership System:
+- Free Users:
+1. Borrow up to 3 items
+2. 10-day borrowing period
+3. No access to e-books
+- Premium Users:
+1. Borrow up to 10 items
+2. 30-day borrowing period
+3. Access to e-books
 
-The workspace contains two folders by default, where:
+Resource Management:
+- View available resource by category (book, DVDs and E-books)
+- Borrow resources (if available)
+- Return borrowed resources
+- Automatic due-date assignment
+- Resource copy count tracking
+---
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+## Project Structure
+LibrarySystem/
+├── src/  
+│   └── com/  
+│       └── mrLuhwani/  
+│           └── librarySystem/  
+│               ├── App.java  
+│               │  
+│               ├── userModel/  
+│               │   └── UserModel.java  
+│               │   └── Membershiplevel.java  
+│               │   └── FreeUser.java  
+│               │   └── PremiumUser.java  
+│               │  
+│               ├── resourceModel/  
+│               │   └── ResourceModel.java  
+│               │   └── Book.java  
+│               │   └── Dvd.java  
+│               │   └── Ebook.java  
+│               │  
+│               └── utilities/  
+│                   └── UserUtilities.java  
+│                   └── ResourceUtilities.java  
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+---
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+## Current Limitations
+- No persistence yet as data is stored in memory
+- No librarian/admin role implemented
+- No input validation for emails and password strength
+- Resources must be created in code
+- CSV file rewrites fully after each update (simple & safe).  
 
-## Dependency Management
+---
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+## Future Improvements
+- Persistence with CSV, or with SQL if learned
+- Librarian/admin model
+- Improving validation and security
+- Unit testing
+- Using build tools
+
+## License
+This project is solely for learning purposes and is open for modification and experimentation

@@ -6,12 +6,12 @@ import com.mrLuhwani.librarySystem.resourceModel.*;
 import com.mrLuhwani.librarySystem.userModel.UserModel;
 import java.util.Scanner;
 
-public class ResourceUtilities {
+class ResourceUtilities {
 
     private static ArrayList<ResourceModel> resources = new ArrayList<>();
     private static Scanner sc = new Scanner(System.in);
 
-    static void showResources() {
+    static void showResources(UserModel user) {
         String category;
         System.out.print("Enter the number for the category: \n1.Books\n2.DVDs\n3.E-books\nReponse: ");
         category = sc.nextLine();
@@ -51,6 +51,10 @@ public class ResourceUtilities {
         } else if (category.equals("2")) {
             specificResources = sortByType(resources, Dvd.class);
         } else if (category.equals("3")) {
+            if (user.getMembershipLevel().getEbookAccess() == false) {
+                System.out.println("Free Users do not have access to E-books");
+                return;
+            }
             specificResources = sortByType(resources, Ebook.class);
         } else {
             System.out.println("Invalid Input!");
@@ -85,7 +89,7 @@ public class ResourceUtilities {
             System.out.println("Resource is currently out of stock!");
             return;
         }
-        user.getItemsAndDueDates().put(resourceToBorrow.toString(), user.setDueDate(LocalDateTime.now()));
+        user.getItemsAndDueDates().put(resourceToBorrow.toString(), user.getMembershipLevel().setDueDate(LocalDateTime.now()));
         resourceToBorrow.setCopyCount(resourceToBorrow.getCopyCount() - 1);
         System.out.println("You have successfully borrowed " + resourceToBorrow.getTitle());
     }
@@ -141,6 +145,9 @@ public class ResourceUtilities {
         boolean userBorrowed = false;
         for (String resourceInBorrowedList : user.getItemsAndDueDates().keySet()) {
             if (resourceToReturn.toString().equals(resourceInBorrowedList)) {
+                /*
+                we are comparing the toString(), try refactoring
+                to isbn later */
                 userBorrowed = true;
                 break;
             }

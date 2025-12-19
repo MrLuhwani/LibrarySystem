@@ -10,7 +10,7 @@ import com.mrLuhwani.librarySystem.userModel.*;
 public class UserUtilities {
 
     private static Scanner sc = new Scanner(System.in);
-    static ArrayList<UserModel> users = new ArrayList<>();
+    private static ArrayList<UserModel> users = new ArrayList<>();
 
     public static HashMap<UserModel, Integer> userLogin() {
         System.out.print("Enter username: ");
@@ -37,7 +37,7 @@ public class UserUtilities {
         String password;
         String email;
 
-        // validate user email for later
+        // validate userMap email for later
         System.out.print("Enter your email address: ");
         email = sc.nextLine();
         while (true) {
@@ -59,11 +59,11 @@ public class UserUtilities {
         System.out.print("Enter password: ");
         password = sc.nextLine();
         UserModel user = new FreeUser(username, password, email);
-        int index = users.size() - 1;
         users.add(user);
+        int index = users.size() - 1;
         System.out.println("New Account successfully created.");
         HashMap<UserModel, Integer> userAndIndex = new HashMap<>(1);
-        System.out.println("Welcome, " + users.get(index).getUsername());
+        System.out.println("Welcome, " + user.getUsername());
         userAndIndex.put(users.get(index), index);
         return userAndIndex;
     }
@@ -78,23 +78,23 @@ public class UserUtilities {
         return menu2;
     }
 
-    public static void menu(Map<UserModel, Integer> user) {
-        UserModel u = null;
-        for (UserModel us : user.keySet()) {
-            u = us;
+    public static void menu(Map<UserModel, Integer> userMap) {
+        UserModel loggedInUser = null;
+        for (UserModel u : userMap.keySet()) {
+            loggedInUser = u;
         }
         String response;
-        if (u instanceof FreeUser) {
+        if (loggedInUser.getMembershipLevel() == MembershipLevel.FREE ) {
             while (true) {
                 System.out.print(UserUtilities.menuChoices(true));
                 response = sc.nextLine();
                 switch (response) {
-                    case "1" -> ResourceUtilities.showResources();
-                    case "2" -> ResourceUtilities.borrowResource(u);
-                    case "3" -> ResourceUtilities.returnResource(u);
-                    case "4" -> u.printItemsAndDueDates();
-                    case "5" -> UserUtilities.upgradeAccount(user);
-                    case "6" -> UserUtilities.changePassword(u);
+                    case "1" -> ResourceUtilities.showResources(loggedInUser);
+                    case "2" -> ResourceUtilities.borrowResource(loggedInUser);
+                    case "3" -> ResourceUtilities.returnResource(loggedInUser);
+                    case "4" -> loggedInUser.printItemsAndDueDates();
+                    case "5" -> UserUtilities.upgradeAccount(userMap);
+                    case "6" -> UserUtilities.changePassword(loggedInUser);
                     case "0" -> {
                         System.out.println("Logging out...");
                         return;
@@ -107,12 +107,12 @@ public class UserUtilities {
                 System.out.print(UserUtilities.menuChoices(false));
                 response = sc.nextLine();
                 switch (response) {
-                    case "1" -> ResourceUtilities.showResources();
-                    case "2" -> ResourceUtilities.borrowResource(u);
-                    case "3" -> ResourceUtilities.returnResource(u);
-                    case "4" -> u.printItemsAndDueDates();
-                    case "5" -> UserUtilities.downgradeAccount(user);
-                    case "6" -> UserUtilities.changePassword(u);
+                    case "1" -> ResourceUtilities.showResources(loggedInUser);
+                    case "2" -> ResourceUtilities.borrowResource(loggedInUser);
+                    case "3" -> ResourceUtilities.returnResource(loggedInUser);
+                    case "4" -> loggedInUser.printItemsAndDueDates();
+                    case "5" -> UserUtilities.downgradeAccount(userMap);
+                    case "6" -> UserUtilities.changePassword(loggedInUser);
                     case "0" -> {
                         System.out.println("Logging out...");
                         return;
@@ -141,7 +141,7 @@ public class UserUtilities {
 
     }
 
-    private static void upgradeAccount(Map<UserModel, Integer> user) {
+    private static void upgradeAccount(Map<UserModel, Integer> userMap) {
         String response;
         System.out.println("Premium plan costs ₦1,200/month");
         while (true) {
@@ -153,7 +153,7 @@ public class UserUtilities {
                 case "1" -> {
                     System.out.println("Processing payment...");
                     System.out.println("Payment Successful");
-                    users.get(new ArrayList<>(user.values()).get(0)).accountUpgrade();
+                    users.get(new ArrayList<>(userMap.values()).get(0)).accountUpgrade();
                     return;
                 }
                 case "2" -> {
@@ -165,7 +165,7 @@ public class UserUtilities {
         }
     }
 
-    private static void downgradeAccount(Map<UserModel, Integer> user) {
+    private static void downgradeAccount(Map<UserModel, Integer> userMap) {
         String response;
         while (true) {
             System.out.print(
@@ -174,7 +174,7 @@ public class UserUtilities {
             // I'll think of a better way to implemet this
             switch (response) {
                 case "1" -> {
-                    users.get(new ArrayList<>(user.values()).get(0)).accountDegrade();
+                    users.get(new ArrayList<>(userMap.values()).get(0)).accountDegrade();
                     return;
                 }
                 case "2" -> {

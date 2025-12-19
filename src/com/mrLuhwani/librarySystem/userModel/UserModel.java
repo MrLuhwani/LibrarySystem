@@ -10,16 +10,20 @@ public abstract class UserModel {
     private String password;
     private String email;
     private HashMap<String, LocalDateTime> itemsAndDueDates;
-    private MembershipLevel membershipLevel;
+    /*
+    Not sure its wise to make the key as a string
+    Try refactoring to make it the resource object instead.
+    Consider overriding the hashcoding, or using the hashcode
+    as the isbn, that way it might be easier to find
+     */
+    protected MembershipLevel membershipLevel;
     
     public UserModel(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.membershipLevel = MembershipLevel.FREE;
         this.itemsAndDueDates = new HashMap<>(this.membershipLevel.getBorrowLimit());
     }
-
     public String getUsername() {
         return username;
     }
@@ -36,6 +40,10 @@ public abstract class UserModel {
         return this.itemsAndDueDates;
     }
     public void printItemsAndDueDates() {
+        if (itemsAndDueDates.isEmpty()) {
+            System.out.println("Borrow List is empty");
+            return;
+        }
         for (String item : this.itemsAndDueDates.keySet()) {
             System.out.println(item + " Return date: " + this.itemsAndDueDates.get(item).format(formatter));
         }
@@ -54,6 +62,10 @@ public abstract class UserModel {
     public int getBorrowLimit() {
         return this.membershipLevel.getBorrowLimit();
     }
-    public abstract boolean canBorrow();
-    public abstract LocalDateTime setDueDate(LocalDateTime instant);
+    public boolean canBorrow() {
+        if (itemsAndDueDates.size() == getBorrowLimit()) {
+            return false;
+        }
+        return true;
+    }
 }
